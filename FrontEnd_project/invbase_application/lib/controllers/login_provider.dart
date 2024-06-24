@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:invbase_application/models/loginRequest_model.dart';
+import 'package:invbase_application/models/authRequest_model.dart';
+import 'package:invbase_application/server/config.dart';
 
 class LoginProvider extends ChangeNotifier {
   var formKeyLogin = GlobalKey<FormState>();
@@ -13,18 +14,20 @@ class LoginProvider extends ChangeNotifier {
   var messageError = '';
   bool obscurePassword = true;
   late String token;
+  String? image;
   final Dio _dio = Dio();
+  var BaseUrl = Config.baseUrl;
 
   Future<String?> processLogin(BuildContext context) async {
     if (formKeyLogin.currentState!.validate()) {
       try {
-        LoginRequestModel requestModel = LoginRequestModel(
+        AuthRequestModel requestModel = AuthRequestModel(
           username: usernameController.text,
           password: passwordController.text,
         );
 
         final response = await _dio.post(
-          'http://192.168.1.7:3000/auth/login',
+          '${BaseUrl}/auth/login',
           data: requestModel.toJson(),
           options: Options(
             headers: {'Content-Type': 'application/json'},
@@ -118,7 +121,7 @@ void showAlertError(BuildContext context) {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Ok'),
+            child: const Text('Ok'),
           ),
         ],
       );

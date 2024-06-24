@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                         if (loginProvider.formKeyLogin.currentState!
                             .validate()) {
                           await loginProvider.processLogin(context);
-                          print('Login State: ${loginProvider.loginState}');
+                          // print(loginProvider.loginState);
                           if (loginProvider.loginState == StateLogin.success) {
                             showDialog(
                               context: context,
@@ -188,7 +188,10 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                         backgroundColor: Colors.green,
                                       ),
-                                      child: const Text('Ok'),
+                                      child: const Text(
+                                        'Ok',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pushReplacement(
@@ -293,15 +296,14 @@ void showAlertError(BuildContext context) {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    10), // Ubah nilai sesuai preferensi Anda
+                borderRadius: BorderRadius.circular(10),
               ),
               backgroundColor: Colors.red,
             ),
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Ok'),
+            child: const Text('Ok', style: TextStyle(color: Colors.white)),
           ),
         ],
       );

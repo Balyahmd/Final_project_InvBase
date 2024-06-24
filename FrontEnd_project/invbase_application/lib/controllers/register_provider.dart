@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:invbase_application/models/registerRequest_model.dart';
+import 'package:invbase_application/models/authRequest_model.dart';
+import 'package:invbase_application/server/config.dart';
 
 class RegisterProvider extends ChangeNotifier {
   var formKeyRegister = GlobalKey<FormState>();
@@ -13,21 +14,23 @@ class RegisterProvider extends ChangeNotifier {
   var messageError = '';
   bool obscurePassword = true;
   final Dio _dio = Dio();
+  var BaseUrl = Config.baseUrl;
+
   Future<String?> processRegister(BuildContext context) async {
     if (formKeyRegister.currentState!.validate()) {
       if (passwordController.text == confirmPasswordController.text) {
         try {
-          RegisterRequestModel requestModel = RegisterRequestModel(
+          AuthRequestModel requestModel = AuthRequestModel(
             username: usernameController.text,
             password: passwordController.text,
           );
 
           final response = await _dio.post(
-            'http://192.168.1.7:3000/auth/register',
+            '${BaseUrl}/auth/register',
             data: requestModel.toJson(),
           );
 
-          if (response.statusCode == 200) {
+          if (response.statusCode == 201) {
             username = usernameController.text;
             registerState = StateRegister.success;
             notifyListeners();
@@ -94,7 +97,7 @@ void showAlertError(BuildContext context) {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Ok'),
+            child: const Text('Ok'),
           ),
         ],
       );
@@ -136,7 +139,7 @@ void showRegisterAlert(BuildContext context) {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Ok'),
+            child: const Text('Ok'),
           ),
         ],
       );

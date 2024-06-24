@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:invbase_application/views/login_page.dart';
@@ -91,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: const InputDecoration(
                     labelText: 'Input Your Username',
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: Icon(Icons.person, color: Colors.deepPurple),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
@@ -215,6 +217,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       onPressed: () async {
                         if (registerProvider.formKeyRegister.currentState!
                             .validate()) {
+                          await registerProvider.processRegister(context);
                           if (registerProvider.registerState ==
                               StateRegister.success) {
                             showDialog(
@@ -252,7 +255,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                           ),
                                         );
                                       },
-                                      child: Text('Ok'),
+                                      child: const Text(
+                                        'Ok',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                     ),
                                   ],
                                 );
@@ -357,7 +363,7 @@ void showAlertError(BuildContext context) {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Ok'),
+            child: const Text('Ok', style: TextStyle(color: Colors.white)),
           ),
         ],
       );
@@ -391,15 +397,14 @@ void showRegisterAlert(BuildContext context) {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    10), // Ubah nilai sesuai preferensi Anda
+                borderRadius: BorderRadius.circular(10),
               ),
               backgroundColor: Colors.orange,
             ),
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Ok'),
+            child: const Text('Ok', style: TextStyle(color: Colors.white)),
           ),
         ],
       );

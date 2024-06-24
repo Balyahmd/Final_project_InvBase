@@ -1,15 +1,14 @@
-// ignore_for_file: file_names
-
-class RegisterRequestModel {
+class AuthRequestModel {
   String? username;
   String? password;
+  // String? image;
 
-  RegisterRequestModel({
+  AuthRequestModel({
     this.username,
     this.password,
   });
 
-  RegisterRequestModel.fromJson(Map<String, dynamic> json) {
+  AuthRequestModel.fromJson(Map<String, dynamic> json) {
     username = json['username'];
     password = json['password'];
   }

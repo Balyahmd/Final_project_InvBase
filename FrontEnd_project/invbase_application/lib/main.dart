@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:invbase_application/controllers/bottom_navigation_provider.dart';
+import 'package:invbase_application/controllers/category_provider.dart';
 import 'package:invbase_application/controllers/product_provider.dart';
+import 'package:invbase_application/views/splash_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:invbase_application/views/register_page.dart';
 import 'package:invbase_application/controllers/login_provider.dart';
 import 'package:invbase_application/controllers/register_provider.dart';
 
@@ -25,11 +27,15 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ProductProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => CategoryProvider(),
+        ),
+        ChangeNotifierProvider(
+            create: (context) => BottomNavigationBarProvider())
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home:
-            RegisterPage(), // Change this to RegisterPage() to start with the registration page
+        home: SplashScreen(),
       ),
     );
   }

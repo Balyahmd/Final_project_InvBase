@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:invbase_application/controllers/bottom_navigation_provider.dart';
+import 'package:invbase_application/controllers/product_provider.dart';
 import 'package:invbase_application/views/login_page.dart';
+import 'package:invbase_application/views/product_detail_page.dart';
+import 'package:invbase_application/views/product_form_create.dart';
+import 'package:invbase_application/views/product_page.dart';
+import 'package:invbase_application/views/profile_page.dart';
 import 'package:provider/provider.dart';
-import 'package:invbase_application/controllers/login_provider.dart'; // Sesuaikan dengan lokasi file LoginProvider
+import 'package:invbase_application/controllers/login_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +17,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductProvider>(context, listen: false).getAllProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundImage:
                           NetworkImage('https://via.placeholder.com/150'),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -42,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white),
                         ),
                         const Text(
-                          'Welcome to my Invbase',
+                          'Welcome to Invbase Appilcation',
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
@@ -52,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.logout, color: Colors.white),
-                      padding: const EdgeInsets.only(left: 80),
+                      padding: const EdgeInsets.only(left: 35),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -78,39 +90,37 @@ class _HomePageState extends State<HomePage> {
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.of(context).pop(); // Tutup dialog
+                                    Navigator.of(context).pop();
                                   },
                                   child: const Text('Cancel'),
                                 ),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.red, // Warna latar belakang
+                                    backgroundColor: Colors.red,
                                   ),
                                   onPressed: () {
-                                    Navigator.of(context).pop(); // Tutup dialog
-                                    // Implement logout logic here
-                                    // Misalnya:
+                                    Navigator.of(context).pop();
+
                                     Provider.of<LoginProvider>(context,
                                             listen: false)
                                         .logout();
-                                    // Navigasi ke halaman login setelah logout
+
                                     Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               const LoginPage()),
-                                      (route) =>
-                                          false, // Hindari kembali ke halaman sebelumnya
+                                      (route) => false,
                                     );
-                                    // Tampilkan dialog berhasil logout (opsional)
+
                                     showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: Text('Logout Successful'),
-                                          content:
-                                              Text('You have been logged out.'),
+                                          title:
+                                              const Text('Logout Successful'),
+                                          content: const Text(
+                                              'You have been logged out.'),
                                           actions: [
                                             ElevatedButton(
                                               onPressed: () {
@@ -138,18 +148,95 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text('Product ${index + 1}'),
-                      ),
-                    );
+                child: Consumer<ProductProvider>(
+                  builder: (context, provider, child) {
+                    if (provider.state == ProductState.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (provider.state == ProductState.error) {
+                      return Center(child: Text(provider.messageError));
+                    } else if (provider.state == ProductState.nodata) {
+                      return const Center(child: Text('No Data'));
+                    } else if (provider.state == ProductState.success) {
+                      return ListView.builder(
+                        itemCount: provider.listProduct?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          var product = provider.listProduct![index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductDetailPage(productId: product.id!),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 5,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: AspectRatio(
+                                          aspectRatio: 1.0,
+                                          child: product.imageUrl != null
+                                              ? Image.network(
+                                                  product.imageUrl!,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Container(
+                                                  color: Colors.grey[300],
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.image,
+                                                      size: 40,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                  ),
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.name ?? '',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepPurpleAccent,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                              'Category: ${product.category?.name ?? 'Unknown'}'),
+                                          const SizedBox(height: 8),
+                                          Text('Quantity: ${product.qty ?? 0}'),
+                                          const SizedBox(height: 8),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    return Container(); // Fallback
                   },
                 ),
               ),
@@ -157,22 +244,63 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductFormCreate(),
+              ));
+        },
+        backgroundColor: Colors.deepPurpleAccent,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       // Footer Icon Navigation
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined),
-            label: 'Product',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            label: 'Account',
-          ),
-        ],
+      bottomNavigationBar: Consumer<BottomNavigationBarProvider>(
+        builder: (context, provider, child) => BottomNavigationBar(
+          currentIndex: provider.currentIndex,
+          onTap: (index) {
+            provider.setIndex(index);
+            // Handle navigation logic here based on index
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+                break;
+              case 1:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductPage()),
+                );
+                break;
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+                break;
+              default:
+                break;
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_outlined),
+              label: 'Product',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle_outlined),
+              label: 'Account',
+            ),
+          ],
+        ),
       ),
     );
   }

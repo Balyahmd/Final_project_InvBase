@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter_svg/svg.dart';
+import 'package:invbase_application/views/register_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,7 +16,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Navigate to the main screen after 3 seconds
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const RegisterPage()),
+      );
     });
   }
 
@@ -24,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SvgPicture.asset("lib/assets/icons/Inventory_base_splash.svg"),
+        child: Image.asset("lib/assets/images/splash_Inventory_base.png"),
       ),
     );
   }

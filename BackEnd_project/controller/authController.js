@@ -21,7 +21,7 @@ class AuthController {
         username,
         password: hashedPassword,
       });
-      res.status(200).json("Register is Sucessfully");
+      res.status(201).json("Register is Sucessfully");
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

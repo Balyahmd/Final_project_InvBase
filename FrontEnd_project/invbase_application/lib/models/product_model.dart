@@ -3,19 +3,29 @@ class ProductModel {
 
   ProductModel({this.data});
 
-  ProductModel.fromJson(Map<String, dynamic> json) {
-    if (json['data'] != null) {
+  ProductModel.fromJson(List<dynamic> json) {
+    if (json.isNotEmpty) {
       data = <ProductData>[];
-      json['data'].forEach((v) {
+      for (var v in json) {
         data!.add(ProductData.fromJson(v));
-      });
+      }
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+  int? get categoryId => null;
+
+  get name => null;
+
+  get qty => null;
+
+  get imageUrl => null;
+
+  get id => null;
+
+  List<dynamic> toJson() {
+    final List<dynamic> data = <dynamic>[];
     if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+      data.addAll(this.data!.map((v) => v.toJson()).toList());
     }
     return data;
   }
@@ -29,8 +39,12 @@ class ProductData {
   String? imageUrl;
   String? createDate;
   String? updateDate;
-  String? createdBy;
-  String? updatedBy;
+  int? createdBy;
+  int? updatedBy;
+  String? createdAt;
+  String? updatedAt;
+  Category? category;
+  User? user;
 
   ProductData({
     this.id,
@@ -42,6 +56,10 @@ class ProductData {
     this.updateDate,
     this.createdBy,
     this.updatedBy,
+    this.createdAt,
+    this.updatedAt,
+    this.category,
+    this.user,
   });
 
   ProductData.fromJson(Map<String, dynamic> json) {
@@ -54,6 +72,11 @@ class ProductData {
     updateDate = json['updateDate'];
     createdBy = json['createdBy'];
     updatedBy = json['updatedBy'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    category =
+        json['Category'] != null ? Category.fromJson(json['Category']) : null;
+    user = json['User'] != null ? User.fromJson(json['User']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +90,77 @@ class ProductData {
     data['updateDate'] = updateDate;
     data['createdBy'] = createdBy;
     data['updatedBy'] = updatedBy;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    if (category != null) {
+      data['Category'] = category!.toJson();
+    }
+    if (user != null) {
+      data['User'] = user!.toJson();
+    }
+    return data;
+  }
+}
+
+class Category {
+  int? id;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+
+  Category({this.id, this.name, this.createdAt, this.updatedAt});
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    return data;
+  }
+}
+
+class User {
+  int? id;
+  String? username;
+  String? password;
+  String? image;
+  String? createdAt;
+  String? updatedAt;
+
+  User({
+    this.id,
+    this.username,
+    this.password,
+    this.image,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    username = json['username'];
+    password = json['password'];
+    image = json['image'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['username'] = username;
+    data['password'] = password;
+    data['image'] = image;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
     return data;
   }
 }
