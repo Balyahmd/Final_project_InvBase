@@ -1,7 +1,7 @@
 # Final Project - InvBase
 
 ## 📌 Introduction
-InvBase adalah aplikasi manajemen inventaris berbasis **Node.js** dan **Flutter**.  
+InvBase adalah aplikasi manajemen inventaris berbasis **Express.js** dan **Flutter**.  
 ## 🎯 Features
 
 ### 🔑 User Authentication (JWT)
